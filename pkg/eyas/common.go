@@ -7,6 +7,15 @@ import (
 )
 
 // GetRootPath get root path
+func GetWorkingDir() string {
+	p := GetExecutePath()
+	if p != "" {
+		return path.Dir(p)
+	}
+	return p
+}
+
+// GetRootPath get root path
 func GetRootPath() string {
 	p := GetExecutePath()
 	if p != "" {

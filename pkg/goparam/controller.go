@@ -38,9 +38,6 @@ func ParseParams(c *gin.Context) *Param {
 		option.Role = role
 	}
 
-	devID := c.DefaultQuery("dev_id", "")
-	option.DevID = devID
-
 	pagestr := c.DefaultQuery("page", "1")
 	page, err := strconv.Atoi(pagestr)
 	if err != nil {

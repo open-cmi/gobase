@@ -118,7 +118,7 @@ func Parse(raw json.RawMessage) error {
 	}
 	logPath := gConf.Path
 	if logPath == "" {
-		rp := eyas.GetRootPath()
+		rp := eyas.GetWorkingDir()
 		logPath = filepath.Join(rp, "data")
 	}
 

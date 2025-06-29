@@ -13,7 +13,7 @@ type SoftwareVersion struct {
 }
 
 func CurrentVersion() (v *SoftwareVersion, err error) {
-	buildfile := filepath.Join(GetRootPath(), "BUILDINFO")
+	buildfile := filepath.Join(GetWorkingDir(), "BUILDINFO")
 	contentByte, err := os.ReadFile(buildfile)
 	if err != nil {
 		return nil, err

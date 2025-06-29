@@ -33,7 +33,7 @@ func (s *Service) Init() error {
 	// init webserver
 	middleware.DefaultMiddleware(s.Engine)
 
-	workDir := eyas.GetRootPath()
+	workDir := eyas.GetWorkingDir()
 	dir := fmt.Sprintf("%s/static/", workDir)
 	s.Engine.Static("/api-static/", dir)
 	middleware.SessionMiddleware(s.Engine)
@@ -51,7 +51,7 @@ func (s *Service) Init() error {
 }
 
 func RunHTTPSServer(eng *gin.Engine, s *Server) {
-	rp := eyas.GetRootPath()
+	rp := eyas.GetWorkingDir()
 	var certFile string
 	if strings.HasPrefix(s.CertFile, ".") {
 		certFile = filepath.Join(rp, s.CertFile)

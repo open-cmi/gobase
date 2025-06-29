@@ -32,7 +32,6 @@ type OrderParam struct {
 type Param struct {
 	UserID      string
 	Role        string
-	DevID       string
 	WhereClause string
 	WhereArgs   []interface{}
 	PageParam   PageParam
