@@ -15,15 +15,6 @@ func GetWorkingDir() string {
 	return p
 }
 
-// GetRootPath get root path
-func GetRootPath() string {
-	p := GetExecutePath()
-	if p != "" {
-		return path.Dir(p)
-	}
-	return p
-}
-
 func GetConfDir() string {
 	p := GetExecutePath()
 	if p != "" {
