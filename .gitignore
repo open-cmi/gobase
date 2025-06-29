@@ -1,0 +1,6 @@
+go.sum
+.vscode
+data/*
+uncommit.sh
+catalog-gen.go
+main/gobase
