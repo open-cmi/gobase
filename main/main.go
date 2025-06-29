@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	err := gobase.Main()
+	err := gobase.Run()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)

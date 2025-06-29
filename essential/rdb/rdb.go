@@ -79,7 +79,7 @@ func Save() json.RawMessage {
 func init() {
 	gConf.Host = "127.0.0.1"
 	gConf.Port = 25431
-	config.RegisterConfig("redis", Parse, Save)
+	config.RegisterConfig("rdb", Parse, Save)
 
 	Register("public", RDBPublic)
 }

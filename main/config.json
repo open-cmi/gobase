@@ -14,7 +14,7 @@
     "database": "test_gobase",
     "user": "postgres"
   },
-  "redis": {
+  "rdb": {
     "host": "127.0.0.1",
     "port": 25431,
     "password": "8ik,\u003cKI*"
