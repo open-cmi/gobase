@@ -10,7 +10,7 @@ dep:
 
 .PHONY:build
 build:dep
-	cd main && CGO_ENABLED=1 CGO_CFLAGS="-DSQLITE_ENABLE_RTREE -DSQLITE_THREADSAFE=1" go build -ldflags "-X github.com/open-cmi/gobase/internal/commands.Version=${VERSION} -s -w" -o $(TARGET) main.go
+	cd main && go build -ldflags "-X github.com/open-cmi/gobase/internal/commands.Version=${VERSION} -s -w" -o $(TARGET) main.go
 
 BUILDDIR?=/usr/local
 .PHONY:install
