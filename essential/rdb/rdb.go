@@ -45,6 +45,9 @@ func GetClient(dbIndex int) *Client {
 		Password: gConf.Password,
 		DB:       dbIndex,
 	})
+	if cli == nil {
+		return nil
+	}
 	gClientPool[dbIndex] = &Client{
 		Conn: cli,
 	}
