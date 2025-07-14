@@ -81,65 +81,65 @@ func GetColumnInsertNamed(columns []string) []string {
 }
 
 // BuildWhereClause build where clause
-func BuildWhereClause(opt *Param) (format string, args []interface{}) {
-	if opt == nil {
-		return "", []interface{}{}
-	}
-	var clause string = ""
+// func BuildWhereClause(opt *Param) (format string, args []interface{}) {
+// 	if opt == nil {
+// 		return "", []interface{}{}
+// 	}
+// 	var clause string = ""
 
-	args = []interface{}{}
-	for index, filter := range opt.Filters {
-		if index == 0 {
-			clause += " where"
-		} else {
-			clause += " and"
-		}
+// 	args = []interface{}{}
+// 	for index, filter := range opt.Filters {
+// 		if index == 0 {
+// 			clause += " where"
+// 		} else {
+// 			clause += " and"
+// 		}
 
-		if filter.Type == "string" {
-			value := filter.Value.(string)
-			if filter.Condition == "contains" {
-				if filter.CaseSensitive {
-					clause += fmt.Sprintf(` %s like '%%' || $%d || '%%'`, filter.Name, index+1)
-				} else {
-					clause += fmt.Sprintf(` UPPER(%s) like UPPER('%%' || $%d || '%%')`, filter.Name, index+1)
-				}
-				args = append(args, value)
-			} else if filter.Condition == "eq" {
-				if filter.CaseSensitive {
-					clause += fmt.Sprintf(" %s = $%d", filter.Name, index+1)
-				} else {
-					clause += fmt.Sprintf(" UPPER(%s) = UPPER($%d)", filter.Name, index+1)
-				}
-				args = append(args, value)
-			}
-		} else if filter.Type == "number" || filter.Type == "integer" {
-			value := filter.Value.(int)
-			if filter.Condition == "eq" {
-				clause += fmt.Sprintf(" %s = $%d", filter.Name, index+1)
-				args = append(args, value)
-			} else if filter.Condition == "lt" {
-				clause += fmt.Sprintf(" %s < $%d", filter.Name, index+1)
-				args = append(args, value)
-			} else if filter.Condition == "gt" {
-				clause += fmt.Sprintf(" %s > $%d", filter.Name, index+1)
-				args = append(args, value)
-			} else if filter.Condition == "le" {
-				clause += fmt.Sprintf(" %s <= $%d", filter.Name, index+1)
-				args = append(args, value)
-			} else if filter.Condition == "ge" {
-				clause += fmt.Sprintf(" %s >= $%d", filter.Name, index+1)
-				args = append(args, value)
-			}
-		} else if filter.Type == "json-array" {
-			if filter.Condition == "in" {
-				clause += fmt.Sprintf(" %s ? $%d", filter.Name, index+1)
-				args = append(args, filter.Value)
-			}
-		}
-	}
+// 		if filter.Type == "string" {
+// 			value := filter.Value.(string)
+// 			if filter.Condition == "contains" {
+// 				if filter.CaseSensitive {
+// 					clause += fmt.Sprintf(` %s like '%%' || $%d || '%%'`, filter.Name, index+1)
+// 				} else {
+// 					clause += fmt.Sprintf(` UPPER(%s) like UPPER('%%' || $%d || '%%')`, filter.Name, index+1)
+// 				}
+// 				args = append(args, value)
+// 			} else if filter.Condition == "eq" {
+// 				if filter.CaseSensitive {
+// 					clause += fmt.Sprintf(" %s = $%d", filter.Name, index+1)
+// 				} else {
+// 					clause += fmt.Sprintf(" UPPER(%s) = UPPER($%d)", filter.Name, index+1)
+// 				}
+// 				args = append(args, value)
+// 			}
+// 		} else if filter.Type == "number" || filter.Type == "integer" {
+// 			value := filter.Value.(int)
+// 			if filter.Condition == "eq" {
+// 				clause += fmt.Sprintf(" %s = $%d", filter.Name, index+1)
+// 				args = append(args, value)
+// 			} else if filter.Condition == "lt" {
+// 				clause += fmt.Sprintf(" %s < $%d", filter.Name, index+1)
+// 				args = append(args, value)
+// 			} else if filter.Condition == "gt" {
+// 				clause += fmt.Sprintf(" %s > $%d", filter.Name, index+1)
+// 				args = append(args, value)
+// 			} else if filter.Condition == "le" {
+// 				clause += fmt.Sprintf(" %s <= $%d", filter.Name, index+1)
+// 				args = append(args, value)
+// 			} else if filter.Condition == "ge" {
+// 				clause += fmt.Sprintf(" %s >= $%d", filter.Name, index+1)
+// 				args = append(args, value)
+// 			}
+// 		} else if filter.Type == "json-array" {
+// 			if filter.Condition == "in" {
+// 				clause += fmt.Sprintf(" %s ? $%d", filter.Name, index+1)
+// 				args = append(args, filter.Value)
+// 			}
+// 		}
+// 	}
 
-	return clause, args
-}
+// 	return clause, args
+// }
 
 // BuildFinalClause build final clause
 func BuildFinalClause(opt *Param) string {
