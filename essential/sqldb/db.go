@@ -37,6 +37,10 @@ func LikePlaceHolder(holderIndex int) string {
 	return fmt.Sprintf("'%%' || $%d || '%%'", holderIndex)
 }
 
+func PlaceHolder(holderIndex int) string {
+	return fmt.Sprintf("$%d", holderIndex)
+}
+
 // Parse db init
 func Parse(raw json.RawMessage) error {
 	err := json.Unmarshal(raw, &gConf)
