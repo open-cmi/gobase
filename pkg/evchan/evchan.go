@@ -1,9 +1,7 @@
 package evchan
 
 import (
-	"errors"
-
-	"github.com/open-cmi/gobase/essential/i18n"
+	"fmt"
 )
 
 type EventData struct {
@@ -36,7 +34,7 @@ func (ev *EventChan) NotifyEvent(event string, data interface{}) {
 func (ev *EventChan) RegisterEvent(event string, handler func(event string, data interface{})) error {
 	_, ok := ev.Handlers[event]
 	if ok {
-		return errors.New(i18n.Sprintf("event handler %s is existing", event))
+		return fmt.Errorf("event handler %s is existing", event)
 	}
 	ev.Handlers[event] = handler
 	return nil
