@@ -26,7 +26,7 @@ type Client struct {
 }
 
 var gConf Config
-
+var gClientPoolMutext sync.Mutex
 var gClientPool map[int]*Client = make(map[int]*Client)
 
 // GetClient get client
@@ -48,6 +48,8 @@ func GetClient(dbIndex int) *Client {
 	if cli == nil {
 		return nil
 	}
+	gClientPoolMutext.Lock()
+	defer gClientPoolMutext.Unlock()
 	gClientPool[dbIndex] = &Client{
 		Conn: cli,
 	}
@@ -58,6 +60,7 @@ func (c *Client) Reconnect() error {
 	c.Mutex.Lock()
 	defer c.Mutex.Unlock()
 	c.Conn.Close()
+
 	addr := net.JoinHostPort(gConf.Host, strconv.Itoa(gConf.Port))
 	cli := redis.NewClient(&redis.Options{
 		Addr:     addr,
