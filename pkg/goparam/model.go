@@ -142,18 +142,34 @@ func GetColumnInsertNamed(columns []string) []string {
 // }
 
 // BuildFinalClause build final clause
-func BuildFinalClause(opt *Param) string {
+func BuildFinalClause(opt *Param, orderByFields []string) string {
 	if opt == nil {
 		return ""
 	}
 
 	var clause string = ""
 
-	if opt.OrderParam.OrderBy != "" {
-		if opt.OrderParam.Order == "" {
-			opt.OrderParam.Order = "asc"
+	if len(orderByFields) != 0 {
+		var orderBy string
+		var order string
+		for _, field := range orderByFields {
+			if field == opt.OrderParam.OrderBy {
+				orderBy = field
+				break
+			}
 		}
-		clause += fmt.Sprintf(` ORDER BY %s %s`, opt.OrderParam.OrderBy, opt.OrderParam.Order)
+		switch opt.OrderParam.Order {
+		case "asc":
+			order = "asc"
+		case "desc":
+			order = "desc"
+		default:
+			break
+		}
+
+		if order != "" && orderBy != "" {
+			clause += fmt.Sprintf(` ORDER BY %s %s`, orderBy, order)
+		}
 	}
 
 	// limit must before offset

@@ -16,3 +16,23 @@ func TestGetColumn(t *testing.T) {
 		return
 	}
 }
+
+func TestBuildFinalClause(t *testing.T) {
+	var param Param
+	param.PageParam.Page = 0
+	param.PageParam.PageSize = 25
+	param.OrderParam.Order = "asc"
+	param.OrderParam.OrderBy = "name"
+
+	clause := BuildFinalClause(&param, []string{})
+	if clause != " LIMIT 25 OFFSET 0" {
+		t.Errorf("fail1")
+		return
+	}
+
+	clause = BuildFinalClause(&param, []string{"name"})
+	if clause != " ORDER BY name asc LIMIT 25 OFFSET 0" {
+		t.Errorf("fail2")
+		return
+	}
+}
