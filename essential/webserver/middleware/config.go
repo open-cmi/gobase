@@ -29,6 +29,8 @@ func Init() error {
 			[]byte("enckey12341234567890123456789012"))
 		memoryStore.MaxAge(gConf.MaxAge)
 	case "redis":
+		fallthrough
+	case "rdb":
 		rdbConf := rdb.GetConf()
 		host := fmt.Sprintf("%s:%d", rdbConf.Host, rdbConf.Port)
 		redisStore, err = redistore.NewRediStoreWithDB(100, "tcp", host, rdbConf.Password, "2")
