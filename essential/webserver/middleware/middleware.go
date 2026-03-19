@@ -97,7 +97,7 @@ type UserClaims struct {
 	UserID   string
 	Username string
 	Email    string
-	Role     int
+	Role     string
 	Status   int
 	jwt.RegisteredClaims
 }
@@ -120,7 +120,7 @@ func ParseAuthToken(token string) (*UserClaims, error) {
 	return nil, err
 }
 
-func GenerateAuthToken(username string, id string, email string, role int, status int, expireDay int) (string, error) {
+func GenerateAuthToken(username string, id string, email string, role string, status int, expireDay int) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(3600 * 24 * (time.Duration)(expireDay) * time.Second)
 	issuer := "gobase"
