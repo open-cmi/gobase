@@ -11,7 +11,7 @@ import (
 type RouterGroup func(e *gin.Engine)
 
 var mustAuthGroup map[string]string = make(map[string]string)
-var authGroup map[string]string = make(map[string]string)
+var optionAuthGroup map[string]string = make(map[string]string)
 var unauthGroup map[string]string = make(map[string]string)
 
 // UnauthInit no auth router init
@@ -25,13 +25,14 @@ func UnauthInit(e *gin.Engine) {
 			}
 
 			for _, r := range modPath {
-				if r.Method == "POST" {
+				switch r.Method {
+				case "POST":
 					g.POST(r.Path, r.Callback)
-				} else if r.Method == "GET" {
+				case "GET":
 					g.GET(r.Path, r.Callback)
-				} else if r.Method == "DELETE" {
+				case "DELETE":
 					g.DELETE(r.Path, r.Callback)
-				} else if r.Method == "PUT" {
+				case "PUT":
 					g.PUT(r.Path, r.Callback)
 				}
 			}
@@ -39,24 +40,25 @@ func UnauthInit(e *gin.Engine) {
 	}
 }
 
-// AuthInit auth router init
-func AuthInit(e *gin.Engine) {
-	for mod, groupPath := range authGroup {
+// OptionAuthInit auth router init
+func OptionAuthInit(e *gin.Engine) {
+	for mod, groupPath := range optionAuthGroup {
 		g := e.Group(groupPath)
 		{
-			modPath, found := authAPIPath[mod]
+			modPath, found := optionAuthAPIPath[mod]
 			if !found {
 				continue
 			}
 
 			for _, r := range modPath {
-				if r.Method == "POST" {
+				switch r.Method {
+				case "POST":
 					g.POST(r.Path, r.Callback)
-				} else if r.Method == "GET" {
+				case "GET":
 					g.GET(r.Path, r.Callback)
-				} else if r.Method == "DELETE" {
+				case "DELETE":
 					g.DELETE(r.Path, r.Callback)
-				} else if r.Method == "PUT" {
+				case "PUT":
 					g.PUT(r.Path, r.Callback)
 				}
 			}
@@ -64,7 +66,7 @@ func AuthInit(e *gin.Engine) {
 	}
 }
 
-// AuthInit auth router init
+// OptionAuthInit auth router init
 func MustAuthInit(e *gin.Engine) {
 	for mod, groupPath := range mustAuthGroup {
 		g := e.Group(groupPath)
@@ -75,13 +77,14 @@ func MustAuthInit(e *gin.Engine) {
 			}
 
 			for _, r := range modPath {
-				if r.Method == "POST" {
+				switch r.Method {
+				case "POST":
 					g.POST(r.Path, r.Callback)
-				} else if r.Method == "GET" {
+				case "GET":
 					g.GET(r.Path, r.Callback)
-				} else if r.Method == "DELETE" {
+				case "DELETE":
 					g.DELETE(r.Path, r.Callback)
-				} else if r.Method == "PUT" {
+				case "PUT":
 					g.PUT(r.Path, r.Callback)
 				}
 			}
@@ -89,13 +92,13 @@ func MustAuthInit(e *gin.Engine) {
 	}
 }
 
-func RegisterAuthRouter(module string, groupPath string) error {
-	_, found := authGroup[module]
+func RegisterOptionAuthRouter(module string, groupPath string) error {
+	_, found := optionAuthGroup[module]
 	if found {
 		errMsg := fmt.Sprintf("module %s auth group api has been registered", module)
 		return errors.New(errMsg)
 	}
-	authGroup[module] = groupPath
+	optionAuthGroup[module] = groupPath
 	return nil
 }
 
@@ -127,14 +130,14 @@ type API struct {
 }
 
 var mustAuthAPIPath map[string][]API = make(map[string][]API)
-var authAPIPath map[string][]API = make(map[string][]API)
+var optionAuthAPIPath map[string][]API = make(map[string][]API)
 var unauthAPIPath map[string][]API = make(map[string][]API)
 
-func RegisterAuthAPI(prod string, method string, path string, proc func(c *gin.Context)) error {
-	modPath, found := authAPIPath[prod]
+func RegisterOptionAuthAPI(prod string, method string, path string, proc func(c *gin.Context)) error {
+	modPath, found := optionAuthAPIPath[prod]
 	if !found {
-		authAPIPath[prod] = []API{}
-		modPath = authAPIPath[prod]
+		optionAuthAPIPath[prod] = []API{}
+		modPath = optionAuthAPIPath[prod]
 	}
 
 	modPath = append(modPath, API{
@@ -143,7 +146,7 @@ func RegisterAuthAPI(prod string, method string, path string, proc func(c *gin.C
 		Path:     path,
 		Callback: proc,
 	})
-	authAPIPath[prod] = modPath
+	optionAuthAPIPath[prod] = modPath
 
 	return nil
 }

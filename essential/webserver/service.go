@@ -39,12 +39,12 @@ func (s *Service) Init() error {
 	middleware.SessionMiddleware(s.Engine)
 	middleware.JWTMiddleware(s.Engine)
 	UnauthInit(s.Engine)
-	if !gConf.StrictAuth {
-		AuthInit(s.Engine)
+	if !gConf.OptionAuth {
+		OptionAuthInit(s.Engine)
 	}
 	middleware.AuthMiddleware(s.Engine)
-	if gConf.StrictAuth {
-		AuthInit(s.Engine)
+	if gConf.OptionAuth {
+		OptionAuthInit(s.Engine)
 	}
 	MustAuthInit(s.Engine)
 	return nil

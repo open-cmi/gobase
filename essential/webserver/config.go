@@ -17,7 +17,7 @@ type Server struct {
 type Config struct {
 	Debug      bool     `json:"debug"`
 	Server     []Server `json:"server"`
-	StrictAuth bool     `json:"strict_auth"`
+	OptionAuth bool     `json:"option_auth"`
 }
 
 var gConf Config
