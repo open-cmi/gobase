@@ -42,7 +42,16 @@ func GetExecutePath() string {
 	if err != nil {
 		return ""
 	}
+
 	execPath := path.Dir(execFile)
+	if strings.Contains(execPath, "go-build") {
+		execPath, err = os.Getwd()
+		if err != nil {
+			return ""
+		}
+		return execPath
+	}
+
 	tmpdir := os.TempDir()
 	if strings.HasPrefix(execFile, tmpdir) {
 		execPath, err = os.Getwd()
