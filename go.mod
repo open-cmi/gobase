@@ -13,7 +13,6 @@ require (
 	github.com/gorilla/sessions v1.4.0
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/lib/pq v1.10.9
-	github.com/longbozhan/timewriter v0.0.0-20211208135957-a7873adad058
 	github.com/mattn/go-sqlite3 v1.14.28
 	github.com/robfig/cron/v3 v3.0.1
 	golang.org/x/sync v0.15.0
