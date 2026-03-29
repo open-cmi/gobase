@@ -3,7 +3,7 @@ package clogger
 import (
 	"log"
 
-	"github.com/longbozhan/timewriter"
+	"github.com/open-cmi/gobase/pkg/timewriter"
 )
 
 type Level uint8
