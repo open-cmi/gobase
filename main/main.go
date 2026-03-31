@@ -7,6 +7,7 @@ import (
 	_ "github.com/open-cmi/gobase/internal/commands"
 
 	"github.com/open-cmi/gobase"
+	_ "github.com/open-cmi/gobase/essential/webserver"
 )
 
 func main() {

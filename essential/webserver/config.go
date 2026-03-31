@@ -15,16 +15,13 @@ type Server struct {
 }
 
 type Config struct {
-	Debug      bool     `json:"debug"`
-	Server     []Server `json:"server"`
-	OptionAuth bool     `json:"option_auth"`
+	Debug  bool     `json:"debug"`
+	Server []Server `json:"server"`
 }
 
 var gConf Config
-var gShouldStartServer bool = false
 
 func Parse(raw json.RawMessage) error {
-	gShouldStartServer = true
 	err := json.Unmarshal(raw, &gConf)
 	return err
 }

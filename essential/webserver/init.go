@@ -6,10 +6,9 @@ import (
 )
 
 func Init() error {
-	if !gShouldStartServer {
+	if len(gConf.Server) == 0 {
 		return nil
 	}
-
 	// start web service
 	s := New()
 

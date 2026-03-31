@@ -1,7 +1,6 @@
 package webserver
 
 import (
-	"fmt"
 	"net"
 	"net/http"
 	"os"
@@ -11,7 +10,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/open-cmi/gobase/essential/logger"
-	"github.com/open-cmi/gobase/essential/webserver/middleware"
 	"github.com/open-cmi/gobase/pkg/eyas"
 )
 
@@ -30,23 +28,12 @@ func New() *Service {
 }
 
 func (s *Service) Init() error {
-	// init webserver
-	middleware.DefaultMiddleware(s.Engine)
 
-	workDir := eyas.GetWorkingDir()
-	dir := fmt.Sprintf("%s/static/", workDir)
-	s.Engine.Static("/api-static/", dir)
-	middleware.SessionMiddleware(s.Engine)
-	middleware.JWTMiddleware(s.Engine)
-	UnauthInit(s.Engine)
-	if !gConf.OptionAuth {
-		OptionAuthInit(s.Engine)
+	rbacInstance := GetRBAC()
+	if rbacInstance != nil {
+		rbacInstance.Init(s.Engine)
 	}
-	middleware.AuthMiddleware(s.Engine)
-	if gConf.OptionAuth {
-		OptionAuthInit(s.Engine)
-	}
-	MustAuthInit(s.Engine)
+
 	return nil
 }
 

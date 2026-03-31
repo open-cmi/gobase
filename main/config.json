@@ -3,9 +3,6 @@
     "level": "debug",
     "path": "/tmp/"
   },
-  "middleware": {
-    "store": "memory"
-  },
   "sqldb": {
     "type": "sqlite3",
     "file": "/tmp/gobase.sqlite3",
