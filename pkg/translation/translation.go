@@ -32,7 +32,7 @@ type Dictionary struct {
 func (d *Dictionary) Lookup(key string) (data string, ok bool) {
 	trans, ok := d.trans[key]
 	if !ok {
-		return "", false
+		return key, false
 	}
 	return fmt.Sprintf("\x02%s", trans), true
 }
