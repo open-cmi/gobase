@@ -17,7 +17,6 @@
     "password": "8ik,\u003cKI*"
   },
   "webserver": {
-    "strict_auth": true,
     "debug": true,
     "server": [
       {
