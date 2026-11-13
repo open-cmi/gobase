@@ -3,34 +3,58 @@ package dev
 import (
 	"os/exec"
 	"strings"
+	"sync"
 )
+
+var (
+	cachedDeviceID string
+	deviceIDMu     sync.RWMutex
+)
+
+func parseIORegProperty(output string, key string) string {
+	for _, line := range strings.Split(output, "\n") {
+		if strings.Contains(line, `"`+key+`"`) {
+			arr := strings.SplitN(line, "=", 2)
+			if len(arr) == 2 {
+				val := strings.Trim(arr[1], "\t\r\n\" ")
+				if val != "" {
+					return val
+				}
+			}
+		}
+	}
+	return ""
+}
 
 // GetDeviceID func
 func GetDeviceID() string {
-	grep := exec.Command("grep", "IOPlatformSerialNumber")
-	ioreg := exec.Command("ioreg", "-l")
+	deviceIDMu.RLock()
+	if cachedDeviceID != "" {
+		id := cachedDeviceID
+		deviceIDMu.RUnlock()
+		return id
+	}
+	deviceIDMu.RUnlock()
 
-	// Get ps's stdout and attach it to grep's stdin.
-	pipe, err := ioreg.StdoutPipe()
+	deviceIDMu.Lock()
+	defer deviceIDMu.Unlock()
+	if cachedDeviceID != "" {
+		return cachedDeviceID
+	}
+
+	output, err := exec.Command("ioreg", "-rd1", "-c", "IOPlatformExpertDevice").Output()
 	if err != nil {
 		return ""
 	}
 
-	defer pipe.Close()
-	grep.Stdin = pipe
-	// Run ps first.
-	ioreg.Start()
-
-	// Run and get the output of grep.
-	output, err := grep.Output()
-	if err != nil {
-		return ""
+	text := string(output)
+	deviceID := parseIORegProperty(text, "IOPlatformSerialNumber")
+	if deviceID == "" {
+		deviceID = parseIORegProperty(text, "IOPlatformUUID")
 	}
 
-	arr := strings.Split(string(output), "=")
-	if len(arr) != 2 {
-		return ""
+	if deviceID != "" {
+		cachedDeviceID = deviceID
 	}
-	deviceid := strings.Trim(arr[1], "\t\n\" ")
-	return deviceid
+	return deviceID
 }

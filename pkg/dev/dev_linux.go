@@ -1,13 +1,13 @@
 package dev
 
 import (
+	"io"
 	"os"
 	"os/exec"
 	"strings"
 )
 
-// GetDeviceID func
-func GetDeviceID() string {
+func getDeviceIDFromDisk() string {
 	execPath, err := os.Executable()
 	if err != nil {
 		return ""
@@ -62,21 +62,33 @@ func GetDeviceID() string {
 	return uuid
 }
 
-// func GetDeviceID() string {
-// 	var deviceIDFiles []string = []string{
-// 		"/sys/class/dmi/id/product_uuid",
-// 		"/sys/block/mmcblk0/device/serial",
-// 	}
-// 	for _, filep := range deviceIDFiles {
-// 		file, err := os.Open(filep)
-// 		if err != nil {
-// 			continue
-// 		}
+func getDeviceIDFromFile() string {
+	var deviceIDFiles []string = []string{
+		"/etc/machine-id",
+		"/var/lib/dbus/machine-id",
+		"/sys/class/dmi/id/product_uuid",
+		"/sys/block/mmcblk0/device/serial",
+	}
+	for _, filep := range deviceIDFiles {
+		file, err := os.Open(filep)
+		if err != nil {
+			continue
+		}
 
-// 		data, _ := io.ReadAll(file)
-// 		deviceid := strings.Trim(string(data), " \r\n\t ")
-// 		file.Close()
-// 		return deviceid
-// 	}
-// 	return ""
-// }
+		data, _ := io.ReadAll(file)
+		deviceid := strings.Trim(string(data), " \r\n\t ")
+		file.Close()
+		return deviceid
+	}
+	return ""
+}
+
+// GetDeviceID func
+func GetDeviceID() string {
+	id := getDeviceIDFromDisk()
+	if id != "" {
+		return id
+	}
+
+	return getDeviceIDFromFile()
+}
