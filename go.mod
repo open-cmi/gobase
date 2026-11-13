@@ -6,7 +6,6 @@ require (
 	github.com/asaskevich/EventBus v0.0.0-20200907212545-49d423059eef
 	github.com/gin-gonic/gin v1.10.1
 	github.com/go-redis/redis/v8 v8.11.5
-	github.com/golang-jwt/jwt/v4 v4.5.2
 	github.com/gomodule/redigo v1.9.2
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/securecookie v1.1.2
@@ -17,7 +16,6 @@ require (
 	github.com/robfig/cron/v3 v3.0.1
 	golang.org/x/sync v0.15.0
 	golang.org/x/text v0.26.0
-	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
@@ -48,4 +46,5 @@ require (
 	golang.org/x/net v0.38.0 // indirect
 	golang.org/x/sys v0.33.0 // indirect
 	google.golang.org/protobuf v1.34.1 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
