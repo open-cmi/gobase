@@ -1,7 +1,9 @@
-package clogger
+package logx
 
 import (
+	"io"
 	"log"
+	"os"
 
 	"github.com/open-cmi/gobase/pkg/timewriter"
 )
@@ -30,17 +32,20 @@ type Logger struct {
 func NewLogger(option *Option) *Logger {
 	var logger Logger
 
-	wr := timewriter.TimeWriter{
-		Dir:        option.Dir,        // 日志路径
-		Compress:   option.Compress,   // 是否压缩
-		ReserveDay: option.ReserveDay, // 老化天数
+	var wr io.Writer = os.Stdout
+	if option.Dir != "" && option.Dir != "stdout" {
+		wr = &timewriter.TimeWriter{
+			Dir:        option.Dir,        // 日志路径
+			Compress:   option.Compress,   // 是否压缩
+			ReserveDay: option.ReserveDay, // 老化天数
+		}
 	}
 
 	logger.printer = make(map[Level]*log.Logger, 0)
-	logger.printer[Debug] = log.New(&wr, "[DEBUG] ", log.Ldate|log.Lmicroseconds)
-	logger.printer[Info] = log.New(&wr, "[INFO] ", log.Ldate|log.Lmicroseconds)
-	logger.printer[Warn] = log.New(&wr, "[WARN] ", log.Ldate|log.Lmicroseconds)
-	logger.printer[Error] = log.New(&wr, "[ERROR] ", log.Ldate|log.Lmicroseconds)
+	logger.printer[Debug] = log.New(wr, "[DEBUG] ", log.Ldate|log.Lmicroseconds)
+	logger.printer[Info] = log.New(wr, "[INFO] ", log.Ldate|log.Lmicroseconds)
+	logger.printer[Warn] = log.New(wr, "[WARN] ", log.Ldate|log.Lmicroseconds)
+	logger.printer[Error] = log.New(wr, "[ERROR] ", log.Ldate|log.Lmicroseconds)
 
 	logger.option = *option
 	return &logger

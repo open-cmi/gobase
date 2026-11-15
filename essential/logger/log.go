@@ -2,13 +2,12 @@ package logger
 
 import (
 	"encoding/json"
-	"fmt"
-
 	"path/filepath"
+	"strings"
 
 	"github.com/open-cmi/gobase/essential/config"
-	"github.com/open-cmi/gobase/pkg/clogger"
 	"github.com/open-cmi/gobase/pkg/eyas"
+	"github.com/open-cmi/gobase/pkg/logx"
 )
 
 type Feature interface {
@@ -22,76 +21,25 @@ type Feature interface {
 	Debugf(format string, v ...interface{})
 }
 
-var Logger Feature
+var gbaseLogger Feature
+
+func GetLogger() Feature {
+	return gbaseLogger
+}
 
 type Config struct {
 	Level string `json:"level"`
 	Path  string `json:"path,omitempty"`
 }
 
-func Error(v ...interface{}) {
-	if Logger != nil {
-		Logger.Error(v...)
-	} else {
-		fmt.Println(v...)
-	}
-}
-
-func Errorf(format string, v ...interface{}) {
-	if Logger != nil {
-		Logger.Errorf(format, v...)
-	} else {
-		fmt.Printf(format, v...)
-	}
-}
-
-func Warn(v ...interface{}) {
-	if Logger != nil {
-		Logger.Warn(v...)
-	} else {
-		fmt.Println(v...)
-	}
-}
-
-func Warnf(format string, v ...interface{}) {
-	if Logger != nil {
-		Logger.Warnf(format, v...)
-	} else {
-		fmt.Printf(format, v...)
-	}
-}
-
-func Info(v ...interface{}) {
-	if Logger != nil {
-		Logger.Info(v...)
-	} else {
-		fmt.Println(v...)
-	}
-}
-
-func Infof(format string, v ...interface{}) {
-	if Logger != nil {
-		Logger.Infof(format, v...)
-	} else {
-		fmt.Printf(format, v...)
-	}
-}
-
-func Debug(v ...interface{}) {
-	if Logger != nil {
-		Logger.Debug(v...)
-	} else {
-		fmt.Println(v...)
-	}
-}
-
-func Debugf(format string, v ...interface{}) {
-	if Logger != nil {
-		Logger.Debugf(format, v...)
-	} else {
-		fmt.Printf(format, v...)
-	}
-}
+func Error(v ...interface{})                 { gbaseLogger.Error(v...) }
+func Errorf(format string, v ...interface{}) { gbaseLogger.Errorf(format, v...) }
+func Warn(v ...interface{})                  { gbaseLogger.Warn(v...) }
+func Warnf(format string, v ...interface{})  { gbaseLogger.Warnf(format, v...) }
+func Info(v ...interface{})                  { gbaseLogger.Info(v...) }
+func Infof(format string, v ...interface{})  { gbaseLogger.Infof(format, v...) }
+func Debug(v ...interface{})                 { gbaseLogger.Debug(v...) }
+func Debugf(format string, v ...interface{}) { gbaseLogger.Debugf(format, v...) }
 
 var gConf Config
 
@@ -101,28 +49,25 @@ func Parse(raw json.RawMessage) error {
 		return err
 	}
 
-	if Logger != nil {
-		return nil
-	}
-
-	level := clogger.Info
+	level := logx.Info
 	switch gConf.Level {
 	case "debug":
-		level = clogger.Debug
+		level = logx.Debug
 	case "info":
-		level = clogger.Info
+		level = logx.Info
 	case "warn":
-		level = clogger.Warn
+		level = logx.Warn
 	case "error":
-		level = clogger.Error
-	}
-	logPath := gConf.Path
-	if logPath == "" {
-		rp := eyas.GetWorkingDir()
-		logPath = filepath.Join(rp, "data")
+		level = logx.Error
 	}
 
-	Logger = clogger.NewLogger(&clogger.Option{
+	logPath := gConf.Path
+	if logPath != "" && logPath != "stdout" && strings.HasPrefix(logPath, ".") {
+		rp := eyas.GetWorkingDir()
+		logPath = filepath.Join(rp, logPath)
+	}
+
+	gbaseLogger = logx.NewLogger(&logx.Option{
 		Dir:        logPath,
 		Compress:   true,
 		Level:      level,
@@ -139,5 +84,9 @@ func Save() json.RawMessage {
 
 func init() {
 	gConf.Level = "debug"
+	gbaseLogger = logx.NewLogger(&logx.Option{
+		Dir:   "",
+		Level: logx.Debug,
+	})
 	config.RegisterConfig("log", Parse, Save)
 }
