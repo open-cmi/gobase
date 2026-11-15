@@ -48,7 +48,9 @@ func Parse(raw json.RawMessage) error {
 		return err
 	}
 
-	if gConf.Type == "postgresql" || gConf.Type == "pg" {
+	switch gConf.Type {
+	case "postgresql":
+	case "pg":
 		var dbconf postgresdb.Config
 		dbconf.Host = gConf.Host
 		dbconf.Port = gConf.Port
@@ -61,7 +63,7 @@ func Parse(raw json.RawMessage) error {
 			return err
 		}
 		gConfDB = dbi
-	} else if gConf.Type == "sqlite3" {
+	case "sqlite3":
 		var dbconf sqlitedb.Config
 		dbconf.File = gConf.File
 		dbconf.User = gConf.User
@@ -73,7 +75,7 @@ func Parse(raw json.RawMessage) error {
 			return err
 		}
 		gConfDB = dbi
-	} else {
+	default:
 		return errors.New("db is not supported")
 	}
 
