@@ -5,6 +5,25 @@ import (
 	"github.com/open-cmi/gobase/initial"
 )
 
+var defaultService *Service
+
+func DefaultService() *Service {
+	return defaultService
+}
+
+func WaitError() <-chan error {
+	if defaultService != nil {
+		return defaultService.Error()
+	}
+	return nil
+}
+
+func Close() {
+	if defaultService != nil {
+		defaultService.Close()
+	}
+}
+
 func Init() error {
 	if len(gConf.Server) == 0 {
 		return nil
@@ -22,9 +41,10 @@ func Init() error {
 	// Run
 	err = s.Run()
 	if err != nil {
-		logger.Errorf(err.Error())
+		logger.Errorf("web server run failed: %s", err.Error())
 		return err
 	}
+	defaultService = s
 	return nil
 }
 

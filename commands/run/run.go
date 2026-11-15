@@ -10,6 +10,7 @@ import (
 	"github.com/open-cmi/gobase/essential/config"
 	"github.com/open-cmi/gobase/essential/logger"
 	"github.com/open-cmi/gobase/essential/subcommands"
+	"github.com/open-cmi/gobase/essential/webserver"
 	"github.com/open-cmi/gobase/initial"
 )
 
@@ -17,17 +18,30 @@ type RunCommand struct {
 	ConfigFile string
 }
 
-func Wait() {
-	// 初始化后，等待信号
+func Wait() error {
+	// 初始化后，等待信号或异常错误
 	sigs := make(chan os.Signal, 1)
 
-	//注册要接收的信号，syscall.SIGINT:接收ctrl+c ,syscall.SIGTERM:程序退出
+	// 注册要接收的信号，syscall.SIGINT:接收ctrl+c ,syscall.SIGTERM:程序退出
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
 
-	<-sigs
+	errChan := webserver.WaitError()
+
+	select {
+	case sig := <-sigs:
+		logger.Infof("received signal %s, exiting...\n", sig.String())
+		return nil
+	case err := <-errChan:
+		if err != nil {
+			logger.Errorf("service encountered runtime error: %s\n", err.Error())
+			return err
+		}
+		return nil
+	}
 }
 
 func Fini() {
+	webserver.Close()
 }
 
 func (c *RunCommand) Synopsis() string {
@@ -62,9 +76,8 @@ func (c *RunCommand) Run() error {
 
 	defer Fini()
 
-	logger.Infof("start successfully, wait for signal to terminate progress")
-	Wait()
-	return nil
+	logger.Infof("server started successfully, press Ctrl+C to stop\n")
+	return Wait()
 }
 
 func init() {

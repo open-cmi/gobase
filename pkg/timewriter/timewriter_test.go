@@ -2,12 +2,13 @@ package timewriter
 
 import (
 	"log"
+	"os"
 	"testing"
 )
 
 func TestWrite(t *testing.T) {
 	timeWriter := &TimeWriter{
-		Dir:           "./log",
+		Dir:           os.TempDir(),
 		Compress:      true,
 		ReserveDay:    30,
 		LogFilePrefix: "timewriter_test", // default is process name
