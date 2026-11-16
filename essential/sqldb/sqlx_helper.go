@@ -174,8 +174,8 @@ func ExtractDBColumns(model interface{}, excludes ...interface{}) []string {
 	return cols
 }
 
-// GetInsertValuesClauses 直接生成 VALUES (:col1, :col2, ...) 占位符字符串子句
-func GetInsertValuesClauses(columns []string) string {
+// GetNamedInsertValuesClauses 直接生成 VALUES (:col1, :col2, ...) 占位符字符串子句
+func GetNamedInsertValuesClauses(columns []string) string {
 	if len(columns) == 0 {
 		return ""
 	}
@@ -186,8 +186,8 @@ func GetInsertValuesClauses(columns []string) string {
 	return strings.Join(res, ", ")
 }
 
-// GetUpdateSetClauses 直接生成 UPDATE SET col1 = :col1, col2 = :col2 字符串子句
-func GetUpdateSetClauses(columns []string, excludes ...string) string {
+// GetNamedUpdateSetClauses 直接生成 UPDATE SET col1 = :col1, col2 = :col2 字符串子句
+func GetNamedUpdateSetClauses(columns []string, excludes ...string) string {
 	exSet := make(map[string]bool, len(excludes))
 	for _, ex := range excludes {
 		exSet[ex] = true
@@ -202,8 +202,8 @@ func GetUpdateSetClauses(columns []string, excludes ...string) string {
 	return strings.Join(res, ", ")
 }
 
-// GetUpsertSetClauses 直接生成 ON CONFLICT DO UPDATE SET col1 = EXCLUDED.col1, col2 = EXCLUDED.col2 字符串子句
-func GetUpsertSetClauses(columns []string, excludes ...string) string {
+// GetNamedUpsertSetClauses 直接生成 ON CONFLICT DO UPDATE SET col1 = EXCLUDED.col1, col2 = EXCLUDED.col2 字符串子句
+func GetNamedUpsertSetClauses(columns []string, excludes ...string) string {
 	exSet := make(map[string]bool, len(excludes))
 	for _, ex := range excludes {
 		exSet[ex] = true

@@ -38,24 +38,24 @@ func TestClausesDirectString(t *testing.T) {
 	cols := []string{"id", "username", "email"}
 
 	// 1. InsertValuesClauses
-	valClause := GetInsertValuesClauses(cols)
+	valClause := GetNamedInsertValuesClauses(cols)
 	wantVal := ":id, :username, :email"
 	if valClause != wantVal {
-		t.Errorf("GetInsertValuesClauses = %q, want %q", valClause, wantVal)
+		t.Errorf("GetNamedInsertValuesClauses = %q, want %q", valClause, wantVal)
 	}
 
 	// 2. UpdateSetClauses (exclude id)
-	updateClause := GetUpdateSetClauses(cols, "id")
+	updateClause := GetNamedUpdateSetClauses(cols, "id")
 	wantUpdate := "username = :username, email = :email"
 	if updateClause != wantUpdate {
-		t.Errorf("GetUpdateSetClauses = %q, want %q", updateClause, wantUpdate)
+		t.Errorf("GetNamedUpdateSetClauses = %q, want %q", updateClause, wantUpdate)
 	}
 
 	// 3. UpsertSetClauses (exclude id)
-	upsertClause := GetUpsertSetClauses(cols, "id")
+	upsertClause := GetNamedUpsertSetClauses(cols, "id")
 	wantUpsert := "username = EXCLUDED.username, email = EXCLUDED.email"
 	if upsertClause != wantUpsert {
-		t.Errorf("GetUpsertSetClauses = %q, want %q", upsertClause, wantUpsert)
+		t.Errorf("GetNamedUpsertSetClauses = %q, want %q", upsertClause, wantUpsert)
 	}
 }
 
