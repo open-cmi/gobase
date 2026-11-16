@@ -9,6 +9,23 @@ import (
 	"github.com/open-cmi/gobase/pkg/types"
 )
 
+// Param 类型别名，指向 types.QueryParam
+type Param = types.QueryParam
+
+// GetUser 从 gin.Context 获取 "user" 字段对应的 map (若存在)
+func GetUser(c *gin.Context) map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	u, exist := c.Get("user")
+	if exist {
+		if user, ok := u.(map[string]interface{}); ok {
+			return user
+		}
+	}
+	return nil
+}
+
 // ParseParams 别名，兼容复数形式调用
 // 从 gin.Context 解析出 types.QueryParam (page, page_size, orders)
 func ParseParams(c *gin.Context) types.QueryParam {

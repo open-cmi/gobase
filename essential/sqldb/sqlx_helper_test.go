@@ -105,7 +105,7 @@ func TestPageAndOrderClauses(t *testing.T) {
 		PageSize: 25,
 		Orders:   items,
 	}
-	finalClause := BuildFinalClause(queryParam, allowedFields)
+	finalClause := BuildFinalClause(&queryParam, allowedFields)
 	wantFinal := " ORDER BY created_time desc, username asc LIMIT 25 OFFSET 0"
 	if finalClause != wantFinal {
 		t.Errorf("BuildFinalClause = %q, want %q", finalClause, wantFinal)

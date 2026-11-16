@@ -116,10 +116,22 @@ func (s *JSONStrings) Scan(src interface{}) error {
 }
 
 // ExtractDBColumns 递归解析结构体及内嵌结构体上的 `db:"..."` 标签，提取数据库列名列表
-func ExtractDBColumns(model interface{}, excludes ...string) []string {
-	excludeSet := make(map[string]bool, len(excludes))
+// excludes 支持可变字符串或字符串切片 (如 "id" 或 []string{"id"})
+func ExtractDBColumns(model interface{}, excludes ...interface{}) []string {
+	excludeSet := make(map[string]bool)
 	for _, ex := range excludes {
-		excludeSet[ex] = true
+		switch v := ex.(type) {
+		case string:
+			if v != "" {
+				excludeSet[v] = true
+			}
+		case []string:
+			for _, s := range v {
+				if s != "" {
+					excludeSet[s] = true
+				}
+			}
+		}
 	}
 
 	t := reflect.TypeOf(model)
@@ -258,8 +270,11 @@ func BuildOrderClause(items []types.OrderItem, allowedFields []string) string {
 	return " ORDER BY " + strings.Join(clauses, ", ")
 }
 
-// BuildFinalClause 一键根据 QueryParam 生成多字段排序 + 分页子句
-func BuildFinalClause(param types.QueryParam, allowedFields []string) string {
+// BuildFinalClause 一键根据 QueryParam 指针生成多字段排序 + 分页子句
+func BuildFinalClause(param *types.QueryParam, allowedFields []string) string {
+	if param == nil {
+		return ""
+	}
 	return BuildOrderClause(param.Orders, allowedFields) + BuildPageClause(param.Page, param.PageSize)
 }
 
