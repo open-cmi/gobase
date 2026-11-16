@@ -26,7 +26,7 @@ func newTestContext(rawURL string) *gin.Context {
 
 func TestParseParam_Default(t *testing.T) {
 	c := newTestContext("/api/v1/users/")
-	q := ParseParams(c)
+	q := ParseListOption(c)
 
 	if q.Page != 1 {
 		t.Errorf("default page = %d, want 1", q.Page)
@@ -41,7 +41,7 @@ func TestParseParam_Default(t *testing.T) {
 
 func TestParseParam_CustomPage(t *testing.T) {
 	c := newTestContext("/api/v1/users/?page=3&page_size=50")
-	q := ParseParams(c)
+	q := ParseListOption(c)
 
 	if q.Page != 3 {
 		t.Errorf("page = %d, want 3", q.Page)
@@ -53,7 +53,7 @@ func TestParseParam_CustomPage(t *testing.T) {
 
 func TestParseParam_LegacyOrder(t *testing.T) {
 	c := newTestContext("/api/v1/users/?order_by=created_time&order=asc")
-	q := ParseParams(c)
+	q := ParseListOption(c)
 
 	if len(q.Orders) != 1 {
 		t.Fatalf("orders length = %d, want 1", len(q.Orders))
@@ -65,7 +65,7 @@ func TestParseParam_LegacyOrder(t *testing.T) {
 
 func TestParseParam_CompactMultiOrder(t *testing.T) {
 	c := newTestContext("/api/v1/users/?order_by=created_time:desc,username:asc")
-	q := ParseParams(c)
+	q := ParseListOption(c)
 
 	if len(q.Orders) != 2 {
 		t.Fatalf("orders length = %d, want 2", len(q.Orders))
@@ -81,7 +81,7 @@ func TestParseParam_CompactMultiOrder(t *testing.T) {
 func TestParseParam_JSONOrders(t *testing.T) {
 	jsonParam := url.QueryEscape(`[{"field":"id","order":"desc"},{"field":"name","order":"asc"}]`)
 	c := newTestContext("/api/v1/users/?orders=" + jsonParam)
-	q := ParseParams(c)
+	q := ParseListOption(c)
 
 	if len(q.Orders) != 2 {
 		t.Fatalf("orders length = %d, want 2", len(q.Orders))
@@ -96,7 +96,7 @@ func TestParseParam_JSONOrders(t *testing.T) {
 
 func TestParseParam_MultiQueryArray(t *testing.T) {
 	c := newTestContext("/api/v1/users/?order_by=created_time:desc&order_by=name:asc")
-	q := ParseParams(c)
+	q := ParseListOption(c)
 
 	if len(q.Orders) != 2 {
 		t.Fatalf("orders length = %d, want 2", len(q.Orders))

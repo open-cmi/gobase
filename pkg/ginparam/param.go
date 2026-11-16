@@ -9,8 +9,8 @@ import (
 	"github.com/open-cmi/gobase/pkg/types"
 )
 
-// Param 类型别名，指向 types.QueryParam
-type Param = types.QueryParam
+// ListOption 类型别名，指向 types.ListOption
+type ListOption = types.ListOption
 
 // GetUser 从 gin.Context 获取 "user" 字段对应的 map (若存在)
 func GetUser(c *gin.Context) map[string]interface{} {
@@ -26,10 +26,10 @@ func GetUser(c *gin.Context) map[string]interface{} {
 	return nil
 }
 
-// ParseParams 别名，兼容复数形式调用
-// 从 gin.Context 解析出 types.QueryParam (page, page_size, orders)
-func ParseParams(c *gin.Context) types.QueryParam {
-	var q types.QueryParam
+// ParseListOption 别名，兼容复数形式调用
+// 从 gin.Context 解析出 types.ListOption (page, page_size, orders)
+func ParseListOption(c *gin.Context) types.ListOption {
+	var q types.ListOption
 
 	// 1. 解析 page (默认第 1 页)
 	pagestr := c.DefaultQuery("page", "1")

@@ -6,7 +6,7 @@ type OrderItem struct {
 	Order string `json:"order"` // 排序方向: "asc" 或 "desc" (不区分大小写，默认 "desc")
 }
 
-type QueryParam struct {
+type ListOption struct {
 	Page     int
 	PageSize int
 	Orders   []OrderItem

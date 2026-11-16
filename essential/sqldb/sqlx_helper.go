@@ -221,8 +221,8 @@ func GetUpsertSetClauses(columns []string, excludes ...string) string {
 // OrderItem 排序项类型别名
 type OrderItem = types.OrderItem
 
-// QueryParam 查询参数类型别名
-type QueryParam = types.QueryParam
+// ListOption 查询参数类型别名
+type ListOption = types.ListOption
 
 // BuildPageClause 生成分页子句: LIMIT ? OFFSET ?
 func BuildPageClause(page, pageSize int) string {
@@ -270,8 +270,8 @@ func BuildOrderClause(items []types.OrderItem, allowedFields []string) string {
 	return " ORDER BY " + strings.Join(clauses, ", ")
 }
 
-// BuildFinalClause 一键根据 QueryParam 指针生成多字段排序 + 分页子句
-func BuildFinalClause(param *types.QueryParam, allowedFields []string) string {
+// BuildFinalClause 一键根据 ListOption 指针生成多字段排序 + 分页子句
+func BuildFinalClause(param *types.ListOption, allowedFields []string) string {
 	if param == nil {
 		return ""
 	}

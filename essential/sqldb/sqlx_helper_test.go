@@ -99,8 +99,8 @@ func TestPageAndOrderClauses(t *testing.T) {
 		t.Errorf("BuildOrderClause with invalid field should be empty, got %q", invClause)
 	}
 
-	// 5. Final clause with QueryParam
-	queryParam := types.QueryParam{
+	// 5. Final clause with ListOption
+	queryParam := types.ListOption{
 		Page:     1,
 		PageSize: 25,
 		Orders:   items,
