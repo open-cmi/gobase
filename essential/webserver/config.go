@@ -14,9 +14,17 @@ type Server struct {
 	KeyFile  string `json:"key,omitempty"`
 }
 
+type StaticRule struct {
+	Base  string `json:"base"`
+	Alias string `json:"alias,omitempty"`
+	Root  string `json:"root,omitempty"`
+	Index string `json:"index,omitempty"`
+}
+
 type Config struct {
-	Debug  bool     `json:"debug"`
-	Server []Server `json:"server"`
+	Debug  bool         `json:"debug"`
+	Server []Server     `json:"server"`
+	Static []StaticRule `json:"static,omitempty"`
 }
 
 var gConf Config
@@ -31,6 +39,11 @@ func Save() json.RawMessage {
 	return raw
 }
 
+func GetConfig() *Config {
+	return &gConf
+}
+
 func init() {
 	config.RegisterConfig("webserver", Parse, Save)
 }
+

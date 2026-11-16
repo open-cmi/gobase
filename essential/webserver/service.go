@@ -54,6 +54,8 @@ func (s *Service) Init() error {
 		rbacInstance.Init(s.Engine)
 	}
 
+	s.initNoRoute()
+
 	return nil
 }
 
