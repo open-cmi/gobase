@@ -50,6 +50,7 @@ func Parse(raw json.RawMessage) error {
 
 	switch gConf.Type {
 	case "postgresql":
+		fallthrough
 	case "pg":
 		var dbconf postgresdb.Config
 		dbconf.Host = gConf.Host
