@@ -1,7 +1,6 @@
 package down
 
 import (
-	"errors"
 	"flag"
 	"fmt"
 	"os"
@@ -37,8 +36,10 @@ func (c *DownCommand) Run() error {
 		return err
 	}
 
-	if configfile == "" {
-		return errors.New("config file must not be empty")
+	configfile, err = config.ResolveConfigFile(configfile)
+	if err != nil {
+		downCmd.Usage()
+		return err
 	}
 
 	err = config.Init(configfile)

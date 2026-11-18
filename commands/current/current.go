@@ -1,7 +1,6 @@
 package current
 
 import (
-	"errors"
 	"flag"
 	"fmt"
 	"os"
@@ -29,9 +28,10 @@ func (c *CurrentCommand) Run() error {
 	if err != nil {
 		return err
 	}
-	if configfile == "" {
+	configfile, err = config.ResolveConfigFile(configfile)
+	if err != nil {
 		currentCmd.Usage()
-		return errors.New("config file must not be empty")
+		return err
 	}
 
 	err = config.Init(configfile)

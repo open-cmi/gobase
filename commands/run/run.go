@@ -1,7 +1,6 @@
 package run
 
 import (
-	"errors"
 	"flag"
 	"os"
 	"os/signal"
@@ -57,9 +56,10 @@ func (c *RunCommand) Run() error {
 	if err != nil {
 		return err
 	}
-	if c.ConfigFile == "" {
+	c.ConfigFile, err = config.ResolveConfigFile(c.ConfigFile)
+	if err != nil {
 		runCmd.Usage()
-		return errors.New("config file must not be empty")
+		return err
 	}
 
 	err = config.Init(c.ConfigFile)

@@ -1,7 +1,6 @@
 package up
 
 import (
-	"errors"
 	"flag"
 	"fmt"
 	"os"
@@ -28,7 +27,7 @@ func (c *UpCommand) Run() error {
 	upCmd := flag.NewFlagSet("up", flag.ContinueOnError)
 	upCmd.StringVar(&input, "input", input, "if use sql, should specify sql directory")
 	upCmd.StringVar(&format, "format", format, "format, go or sql")
-	upCmd.StringVar(&configfile, "config", configfile, "config file, default ./etc/db.json")
+	upCmd.StringVar(&configfile, "config", configfile, "config file")
 	upCmd.IntVar(&count, "count", count, "migrate up count")
 
 	err := upCmd.Parse(os.Args[2:])
@@ -36,8 +35,10 @@ func (c *UpCommand) Run() error {
 		return err
 	}
 
-	if configfile == "" {
-		return errors.New("config file must not be empty")
+	configfile, err = config.ResolveConfigFile(configfile)
+	if err != nil {
+		upCmd.Usage()
+		return err
 	}
 
 	err = config.Init(configfile)
