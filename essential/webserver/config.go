@@ -21,11 +21,16 @@ type StaticRule struct {
 	Index string `json:"index,omitempty"`
 }
 
+type ReplaceRule struct {
+	From string `json:"from"`
+	To   string `json:"to"`
+}
+
 type Config struct {
-	Debug  bool         `json:"debug"`
-	Server []Server     `json:"server"`
-	Static []StaticRule `json:"static,omitempty"`
-	Strip  string       `json:"strip,omitempty"`
+	Debug   bool          `json:"debug"`
+	Server  []Server      `json:"server"`
+	Static  []StaticRule  `json:"static,omitempty"`
+	Replace []ReplaceRule `json:"replace,omitempty"`
 }
 
 var gConf Config

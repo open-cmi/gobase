@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func TestStripHandler(t *testing.T) {
+func TestReplaceHandler(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	tmpDir := t.TempDir()
@@ -21,10 +21,15 @@ func TestStripHandler(t *testing.T) {
 	origConf := gConf
 	defer func() { gConf = origConf }()
 
-	gConf.Strip = "/motagent"
+	gConf.Replace = []ReplaceRule{
+		{
+			From: "/motagent/api",
+			To:   "/api",
+		},
+	}
 	gConf.Static = []StaticRule{
 		{
-			Base:  "/",
+			Base:  "/motagent",
 			Alias: motagentDir,
 			Index: "index.html",
 		},
@@ -39,7 +44,7 @@ func TestStripHandler(t *testing.T) {
 
 	h := svc.Handler()
 
-	// 1. /motagent/api/overview/v1/ 剥离 /motagent 后命中 /api/overview/v1/
+	// 1. /motagent/api/overview/v1/ 替换为 /api/overview/v1/ 并命中路由
 	req1 := httptest.NewRequest(http.MethodGet, "/motagent/api/overview/v1/", nil)
 	w1 := httptest.NewRecorder()
 	h.ServeHTTP(w1, req1)
@@ -55,15 +60,15 @@ func TestStripHandler(t *testing.T) {
 		t.Fatalf("expected 200 'overview ok', got %d %q", w2.Code, w2.Body.String())
 	}
 
-	// 3. 边界保护：/motagent-other/api/overview/v1/ 不应被误剥离
-	req3 := httptest.NewRequest(http.MethodGet, "/motagent-other/api/overview/v1/", nil)
+	// 3. 边界保护：/motagent/api-docs 不应被误替换
+	req3 := httptest.NewRequest(http.MethodGet, "/motagent/api-docs", nil)
 	w3 := httptest.NewRecorder()
 	h.ServeHTTP(w3, req3)
 	if w3.Code == http.StatusOK && w3.Body.String() == "overview ok" {
-		t.Fatalf("should not strip /motagent-other")
+		t.Fatalf("should not replace /motagent/api-docs")
 	}
 
-	// 4. 静态文件请求剥离 /motagent 后命中 static (base: "/")
+	// 4. 静态文件请求保留 /motagent 前缀，正常走 static (base: "/motagent")
 	req4 := httptest.NewRequest(http.MethodGet, "/motagent/assets/app.js", nil)
 	w4 := httptest.NewRecorder()
 	h.ServeHTTP(w4, req4)
