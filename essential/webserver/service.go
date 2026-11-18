@@ -174,7 +174,7 @@ func (s *Service) createServerInstance(srvConf *Server) (*serverInstance, error)
 		}
 		httpSrv := &http.Server{
 			Addr:    t,
-			Handler: s.Engine,
+			Handler: s.Handler(),
 		}
 		return &serverInstance{httpServer: httpSrv, listener: ln, proto: "http"}, nil
 
@@ -208,7 +208,7 @@ func (s *Service) createServerInstance(srvConf *Server) (*serverInstance, error)
 		})
 		httpSrv := &http.Server{
 			Addr:    t,
-			Handler: s.Engine,
+			Handler: s.Handler(),
 		}
 		return &serverInstance{httpServer: httpSrv, listener: tlsLn, proto: "https"}, nil
 
@@ -224,7 +224,7 @@ func (s *Service) createServerInstance(srvConf *Server) (*serverInstance, error)
 			return nil, fmt.Errorf("listen unix %s failed: %w", sockAddr, err)
 		}
 		httpSrv := &http.Server{
-			Handler: s.Engine,
+			Handler: s.Handler(),
 		}
 		return &serverInstance{httpServer: httpSrv, listener: ln, proto: "unix"}, nil
 

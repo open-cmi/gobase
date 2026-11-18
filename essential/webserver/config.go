@@ -25,6 +25,7 @@ type Config struct {
 	Debug  bool         `json:"debug"`
 	Server []Server     `json:"server"`
 	Static []StaticRule `json:"static,omitempty"`
+	Strip  string       `json:"strip,omitempty"`
 }
 
 var gConf Config
