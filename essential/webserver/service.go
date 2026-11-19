@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/open-cmi/gobase/essential/config"
 	"github.com/open-cmi/gobase/essential/logger"
 	"github.com/open-cmi/gobase/pkg/eyas"
 )
@@ -33,7 +34,7 @@ type Service struct {
 }
 
 func New() *Service {
-	if !gConf.Debug {
+	if !config.IsDebug() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 

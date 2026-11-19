@@ -16,6 +16,7 @@ type Context struct {
 	parser  *Parser
 	Conf    map[string]json.RawMessage
 	options map[string]Option
+	order   []string
 }
 
 func NewContext() *Context {
@@ -38,6 +39,7 @@ func (c *Context) Register(opt *Option) error {
 		return errors.New("save func should not be empty")
 	}
 	c.options[opt.Name] = *opt
+	c.order = append(c.order, opt.Name)
 	return nil
 }
 
@@ -55,7 +57,8 @@ func (c *Context) Load(configfile string) error {
 		return err
 	}
 
-	for name, option := range c.options {
+	for _, name := range c.order {
+		option := c.options[name]
 		value, ok := c.Conf[name]
 		if ok {
 			if option.ParseFunc != nil {
@@ -72,7 +75,8 @@ func (c *Context) Load(configfile string) error {
 
 // Save save config
 func (c *Context) Save() {
-	for name, option := range c.options {
+	for _, name := range c.order {
+		option := c.options[name]
 		if option.SaveFunc != nil {
 			str := option.SaveFunc()
 			c.Conf[name] = str

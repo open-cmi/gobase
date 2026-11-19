@@ -16,8 +16,8 @@
     "port": 25431,
     "password": "8ik,\u003cKI*"
   },
+  "mode": "debug",
   "webserver": {
-    "debug": true,
     "server": [
       {
         "address": "0.0.0.0",

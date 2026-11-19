@@ -22,6 +22,7 @@ type Option struct {
 	Level      Level
 	Compress   bool
 	ReserveDay int
+	Stdout     bool
 }
 
 type Logger struct {
@@ -34,10 +35,15 @@ func NewLogger(option *Option) *Logger {
 
 	var wr io.Writer = os.Stdout
 	if option.Dir != "" && option.Dir != "stdout" {
-		wr = &timewriter.TimeWriter{
+		tw := &timewriter.TimeWriter{
 			Dir:        option.Dir,        // 日志路径
 			Compress:   option.Compress,   // 是否压缩
 			ReserveDay: option.ReserveDay, // 老化天数
+		}
+		if option.Stdout {
+			wr = io.MultiWriter(os.Stdout, tw)
+		} else {
+			wr = tw
 		}
 	}
 

@@ -43,12 +43,7 @@ func Debugf(format string, v ...interface{}) { gbaseLogger.Debugf(format, v...) 
 
 var gConf Config
 
-func Parse(raw json.RawMessage) error {
-	err := json.Unmarshal(raw, &gConf)
-	if err != nil {
-		return err
-	}
-
+func applyLogger() {
 	level := logx.Info
 	switch gConf.Level {
 	case "debug":
@@ -72,8 +67,17 @@ func Parse(raw json.RawMessage) error {
 		Compress:   true,
 		Level:      level,
 		ReserveDay: 30,
+		Stdout:     config.IsDebug(),
 	})
+}
 
+func Parse(raw json.RawMessage) error {
+	err := json.Unmarshal(raw, &gConf)
+	if err != nil {
+		return err
+	}
+
+	applyLogger()
 	return nil
 }
 

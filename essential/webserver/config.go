@@ -27,7 +27,6 @@ type ReplaceRule struct {
 }
 
 type Config struct {
-	Debug   bool          `json:"debug"`
 	Server  []Server      `json:"server"`
 	Static  []StaticRule  `json:"static,omitempty"`
 	Replace []ReplaceRule `json:"replace,omitempty"`
@@ -52,4 +51,3 @@ func GetConfig() *Config {
 func init() {
 	config.RegisterConfig("webserver", Parse, Save)
 }
-
