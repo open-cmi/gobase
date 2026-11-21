@@ -11,9 +11,14 @@ import (
 	"github.com/open-cmi/gobase/essential/i18n"
 )
 
+type LongVersion struct {
+	Version string `json:"version"`
+	Commit  string `json:"commit,omitempty"`
+}
+
 type ComponentVersion struct {
-	Name    string      `json:"name"`
-	Version LongVersion `json:"version"`
+	LongVersion
+	Name string `json:"name"`
 }
 
 type SoftwareVersion struct {
@@ -21,11 +26,6 @@ type SoftwareVersion struct {
 	Prod       LongVersion        `json:"prod"`
 	Eyas       LongVersion        `json:"eyas"`
 	Components []ComponentVersion `json:"components"`
-}
-
-type LongVersion struct {
-	Version string `json:"version"`
-	Commit  string `json:"commit,omitempty"`
 }
 
 // v1.0.0-7-ge622ad89、v1.0.0-rc1-39-g4f62f61 或 v1.0.0
@@ -78,10 +78,12 @@ func ParseBuildInfo(content []byte) *SoftwareVersion {
 		default:
 			// 之后的都是组件版本
 			origKey := strings.TrimSpace(parts[0])
-			version.Components = append(version.Components, ComponentVersion{
-				Name:    origKey,
-				Version: ParseLongVersion(val),
-			})
+			cv := ParseLongVersion(val)
+			var com ComponentVersion
+			com.Name = origKey
+			com.Version = cv.Version
+			com.Commit = cv.Commit
+			version.Components = append(version.Components, com)
 		}
 	}
 	return version

@@ -50,12 +50,13 @@ xsnos-cli: v0.9.0-0-g856307c
 
 	expectedComponents := []struct {
 		name    string
-		version LongVersion
+		version string
+		commit  string
 	}{
-		{"nays", LongVersion{Version: "v0.10.0", Commit: "12-gf0b4a07"}},
-		{"nte", LongVersion{Version: "v0.10.0", Commit: "26-g748dc8a"}},
-		{"web-ui", LongVersion{Version: "v0.10.0-rc1", Commit: "39-g4f62f61"}},
-		{"xsnos-cli", LongVersion{Version: "v0.9.0", Commit: "0-g856307c"}},
+		{"nays", "v0.10.0", "12-gf0b4a07"},
+		{"nte", "v0.10.0", "26-g748dc8a"},
+		{"web-ui", "v0.10.0-rc1", "39-g4f62f61"},
+		{"xsnos-cli", "v0.9.0", "0-g856307c"},
 	}
 
 	for i, exp := range expectedComponents {
