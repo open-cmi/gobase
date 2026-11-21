@@ -44,7 +44,9 @@ func ParseLongVersion(version string) LongVersion {
 		parsed.Commit = version[matches[2]:matches[3]]
 	}
 	if !verRe.MatchString(parsed.Version) {
-		return LongVersion{}
+		return LongVersion{
+			Version: version,
+		}
 	}
 	return parsed
 }
