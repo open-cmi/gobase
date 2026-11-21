@@ -2,7 +2,6 @@ package eyas
 
 import (
 	"errors"
-	"fmt"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -38,7 +37,6 @@ func ParseLongVersion(version string) LongVersion {
 	version = strings.TrimSpace(version)
 	parsed := LongVersion{Version: version}
 	matches := commitRe.FindStringSubmatchIndex(version)
-	fmt.Println(matches)
 	if len(matches) > 0 {
 		parsed.Version = version[:matches[0]]
 		parsed.Commit = version[matches[2]:matches[3]]
