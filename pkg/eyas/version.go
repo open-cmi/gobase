@@ -2,23 +2,51 @@ package eyas
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/open-cmi/gobase/essential/i18n"
 )
 
 type ComponentVersion struct {
-	Name    string `json:"name"`
-	Version string `json:"version"`
+	Name    string      `json:"name"`
+	Version LongVersion `json:"version"`
 }
 
 type SoftwareVersion struct {
 	BuildTime  string             `json:"build_time"`
-	Prod       string             `json:"prod"`
-	Eyas       string             `json:"eyas"`
+	Prod       LongVersion        `json:"prod"`
+	Eyas       LongVersion        `json:"eyas"`
 	Components []ComponentVersion `json:"components"`
+}
+
+type LongVersion struct {
+	Version string `json:"version"`
+	Commit  string `json:"commit,omitempty"`
+}
+
+// v1.0.0-7-ge622ad89、v1.0.0-rc1-39-g4f62f61 或 v1.0.0
+var (
+	verRe    = regexp.MustCompile(`^v?\d+\.\d+\.\d+(?:-[0-9A-Za-z][0-9A-Za-z.-]*)?$`)
+	commitRe = regexp.MustCompile(`-(\d+-g[0-9a-fA-F]+)$`)
+)
+
+func ParseLongVersion(version string) LongVersion {
+	version = strings.TrimSpace(version)
+	parsed := LongVersion{Version: version}
+	matches := commitRe.FindStringSubmatchIndex(version)
+	fmt.Println(matches)
+	if len(matches) > 0 {
+		parsed.Version = version[:matches[0]]
+		parsed.Commit = version[matches[2]:matches[3]]
+	}
+	if !verRe.MatchString(parsed.Version) {
+		return LongVersion{}
+	}
+	return parsed
 }
 
 // ParseBuildInfo parses the key-value formatted BUILDINFO file content
@@ -44,15 +72,15 @@ func ParseBuildInfo(content []byte) *SoftwareVersion {
 		case "build time", "build_time":
 			version.BuildTime = val
 		case "prod":
-			version.Prod = val
+			version.Prod = ParseLongVersion(val)
 		case "eyas":
-			version.Eyas = val
+			version.Eyas = ParseLongVersion(val)
 		default:
 			// 之后的都是组件版本
 			origKey := strings.TrimSpace(parts[0])
 			version.Components = append(version.Components, ComponentVersion{
 				Name:    origKey,
-				Version: val,
+				Version: ParseLongVersion(val),
 			})
 		}
 	}
